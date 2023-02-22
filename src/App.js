@@ -12,14 +12,16 @@ function App() {
     return (
         <div className="App">
             <Header/>
-            <Router>
-                <Routes>
-                    <Route path="/" element={<Home/>}/>
-                    <Route path="/about" element={<About/>}/>
-                    <Route path="/contacts" element={<Contacts/>}/>
-                    <Route path="/blog" element={<Blog/>}/>
-                </Routes>
-            </Router>
+            <div className="mx-auto w-100" style={{textAlign: "center"}}>
+                <Router>
+                    <Routes>
+                        <Route path="/" element={<Home/>}/>
+                        <Route path="/about" element={<About/>}/>
+                        <Route path="/contacts" element={<Contacts/>}/>
+                        <Route path="/blog" element={<Blog/>}/>
+                    </Routes>
+                </Router>
+            </div>
         </div>
     );
 }

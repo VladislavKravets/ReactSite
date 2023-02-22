@@ -6,13 +6,14 @@ import Home from "./Pages/Home";
 import About from "./Pages/About";
 import Contacts from "./Pages/Contacts";
 import Blog from "./Pages/Blog";
+import {Container} from "react-bootstrap";
 
 
 function App() {
     return (
         <div className="App">
             <Header/>
-            <div className="mx-auto w-100" style={{textAlign: "center"}}>
+            <Container>
                 <Router>
                     <Routes>
                         <Route path="/" element={<Home/>}/>
@@ -21,7 +22,7 @@ function App() {
                         <Route path="/blog" element={<Blog/>}/>
                     </Routes>
                 </Router>
-            </div>
+            </Container>
         </div>
     );
 }

@@ -25,7 +25,6 @@ class Blog extends Component {
                 Blog
                 <Row>
                     <Col md="9">
-
                         {
                             blogs.map((item,index) => {
                                 return <>

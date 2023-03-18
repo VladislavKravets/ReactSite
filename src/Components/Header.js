@@ -9,11 +9,12 @@ import {
     Modal
 } from "react-bootstrap";
 
-import logo from "../assets/logo192.png";
+import logo from "../assets/logo.png";
 import ModalBox from "./Header/ModalBox";
 
 
 function Header() {
+    const logoText = 'Tourism'
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -38,7 +39,7 @@ function Header() {
 
                             alt="Logo"
                         />{" "}
-                        React Site
+                        {logoText}
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
                     <Navbar.Collapse id="responsive-navbar-nav">

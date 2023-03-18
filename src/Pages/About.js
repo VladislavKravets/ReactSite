@@ -1,12 +1,29 @@
 import React, {Component} from 'react';
 import Tab from 'react-bootstrap/Tab'
-import {Col, Container, Nav, Row} from "react-bootstrap";
+import {Col, Container, Image, Nav, Row} from "react-bootstrap";
 
 export class About extends Component {
     render() {
         return (
-            <Container>
-                About
+            <Container className="my-5">
+                <Row>
+                    <Col>
+                        <h1 className="text-center mb-5">Про нас</h1>
+                        <p className="text-justify">
+                            Ми - команда професіоналів з різних сфер, які об'єдналися, щоб надавати якісні послуги нашим клієнтам.
+                        </p>
+                        <p className="text-justify">
+                            Наші послуги охоплюють все: від розробки веб-сайтів до маркетингу та реклами, від консультацій з бізнесу до аудиту безпеки. Ми завжди стежимо за новинами у своїх галузях, щоб надавати клієнтам найактуальніші та ефективні рішення.
+                        </p>
+                        <p className="text-justify">
+                            Наша мета - забезпечити успіх наших клієнтів. Ми завжди працюємо над покращенням якості наших послуг та створенням комфортних умов для співпраці. Якщо у вас є якісь питання або ви хочете дізнатись більше про нашу команду, будь ласка, зв'яжіться з нами!
+                        </p>
+                    </Col>
+                    <Col>
+                        <Image src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366" fluid />
+                    </Col>
+                </Row>
+                <h1 className="text-center mb-5">Приклади наших робіт</h1>
                 <Tab.Container id="left-tabs-example" defaultActiveKey="first">
                     <Row>
                         <Col sm={3}>
@@ -19,12 +36,6 @@ export class About extends Component {
                                 </Nav.Item>
                                 <Nav.Item>
                                     <Nav.Link eventKey="third">Program</Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link eventKey="fourth">Frameworks</Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link eventKey="fifth">Library</Nav.Link>
                                 </Nav.Item>
                             </Nav>
                         </Col>
@@ -47,20 +58,6 @@ export class About extends Component {
                                 <Tab.Pane eventKey="third">
                                     <img className="d-block w-100"
                                          src="https://s3-alpha.figma.com/hub/file/858291939/14dda654-9bf1-47a5-ba66-904aa3003c6e-cover.png" alt="picture three"/>
-                                    <p>
-                                        Lorem
-                                    </p>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey="fourth">
-                                    <img className="d-block w-100"
-                                         src="https://ichef.bbci.co.uk/news/999/cpsprodpb/15951/production/_117310488_16.jpg" alt="picture fourth"/>
-                                    <p>
-                                        Lorem
-                                    </p>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey="fifth">
-                                    <img className="d-block w-100"
-                                         src="https://programminglibrarian.org/sites/default/files/partnerships_2.jpg" alt="picture fifth"/>
                                     <p>
                                         Lorem
                                     </p>

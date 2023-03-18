@@ -5,8 +5,9 @@ import Header from "./Components/Header";
 import Home from "./Pages/Home";
 import About from "./Pages/About";
 import Contacts from "./Pages/Contacts";
-import Blog from "./Pages/Blog";
+import Blogs from "./Pages/Blogs.js";
 import {Container} from "react-bootstrap";
+import Blog from "./Pages/Blog";
 
 
 function App() {
@@ -19,7 +20,8 @@ function App() {
                         <Route path="/" element={<Home/>}/>
                         <Route path="/about" element={<About/>}/>
                         <Route path="/contacts" element={<Contacts/>}/>
-                        <Route path="/blog" element={<Blog/>}/>
+                        <Route path="/blog" element={<Blogs/>}/>
+                        <Route path={"/blog/:link"} element={<Blog/>}/>
                     </Routes>
                 </Router>
             </Container>

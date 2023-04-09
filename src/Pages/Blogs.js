@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Container, Col, Row, Card, ListGroup} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {FaStar} from "react-icons/fa";
@@ -24,7 +24,7 @@ const blogList = [
         img: "https://emgotas.files.wordpress.com/2016/11/what-is-a-team.jpg",
         title: "Blogs post 1",
         body: "Test blog 2",
-        category: categories[0].category,
+        category: categories[1].category,
         date: "15 June 2023",
         rating: 0
     },
@@ -51,7 +51,7 @@ const blogList = [
         img: "https://emgotas.files.wordpress.com/2016/11/what-is-a-team.jpg",
         title: "ASD post 4",
         body: "Test blog 4",
-        category: categories[0].category,
+        category: categories[2].category,
         date: "15 September 2023",
         rating: 3
     },
@@ -78,7 +78,7 @@ const blogList = [
         img: "https://emgotas.files.wordpress.com/2016/11/what-is-a-team.jpg",
         title: "Blogs post 7",
         body: "Test blog 7",
-        category: categories[0].category,
+        category: categories[1].category,
         date: "15 November 2023",
         rating: 0
     },
@@ -105,7 +105,7 @@ const blogList = [
         img: "https://emgotas.files.wordpress.com/2016/11/what-is-a-team.jpg",
         title: "Blogs post 10",
         body: "Test blog 10",
-        category: categories[0].category,
+        category: categories[2].category,
         date: "15 February 2023",
         rating: 0
     },
@@ -139,9 +139,18 @@ function Blogs() {
     const [userSortSelected, setUserSortSelected] = useState(options[0].value);
 
     /* на будущее если захотим создавать поиск по заголовкам этот стейт пригодится */
-    const [countPage, setCountPage] = useState(Math.ceil(Object.keys(blogList).length / 5));
+    const [countPage, setCountPage] = useState(Math.ceil(Object.keys(blogs).length / slicePage));
 
     const [activeBtn, setActiveBtn] = useState(categories[0].category); // активная категория
+
+    useEffect(() => {
+        /* Фильтруем блоги */
+        const filteredBlogs = blogs.filter(blog =>
+            activeBtn === categories[0].category ? true : blog.category === activeBtn
+        );
+        setCountPage(Math.ceil(Object.keys(filteredBlogs).length / slicePage));
+
+    }, [blogs, activeBtn, slicePage]);
 
     // Наши кастомные функции
 
@@ -195,8 +204,15 @@ function Blogs() {
                 <Col md="9">
                     {
                         blogs
+                            // Фильтруем по категории (для вывода)
+                            .filter((blog) =>
+                                activeBtn === categories[0].category ? true : blog.category === activeBtn
+                            )
+                            // Сортировка по дате или алфавиту
                             .sort(sortParams())
+                            // Режим на страницы
                             .slice((page - 1) * slicePage, page * slicePage)
+                            // Выводим итог
                             .map((item, index) => {
                                 return (
                                     <div key={item.id}>

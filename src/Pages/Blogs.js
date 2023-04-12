@@ -1,139 +1,33 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Container, Col, Row, Card, ListGroup} from "react-bootstrap";
-import {Link} from "react-router-dom";
-import {FaStar} from "react-icons/fa";
 import BlogPost from "../Components/BlogPost";
 import BlogReview from "../Components/BlogReview";
+import {onValue, ref, update} from "firebase/database";
+import {db} from "../firebase";
+import LanguageContext from "../Components/LanguageContext";
 
-const categories = [
-    {category: "Всі записи"},
-    {category: "Тільки туризм"},
-    {category: "Тільки програмування"},
+
+// нужно для первоначальной инициализации (опять костыли, да да..)
+const category = [
+    {category: "Всі записи"}
 ];
+
 //возможные типи сортировок: Дата (по порядку/убывание), заголовок по алфавиту (по порядку / убывание)
 const options = [
-    {value: 'UpNewestFirst', label: '\u2193 Newest first'},
-    {value: 'DownNewestFirst', label: '\u2191 Newest first'},
-    {value: 'UpAlphabetical', label: '\u2193 In alphabetical order'},
-    {value: 'DownAlphabetical', label: '\u2191 In alphabetical order'}
+    {value: 'UpNewestFirst', labelEN: '\u2193 Newest first', labelUA: '\u2193 Найновіші перші'},
+    {value: 'DownNewestFirst', labelEN: '\u2191 Newest down', labelUA: '\u2191 Найновіші останні'},
+    {value: 'UpAlphabetical', labelEN: '\u2193 In alphabetical order', labelUA: '\u2193 В алфавітному порядку'},
+    {value: 'DownAlphabetical', labelEN: '\u2191 Out alphabetical order', labelUA: '\u2191Поза алфавітного порядку'}
 ]
-// кастомный лист блогов (на самом деле нужен бек)
-const blogList = [
-    {
-        id: "1",
-        img: "https://emgotas.files.wordpress.com/2016/11/what-is-a-team.jpg",
-        title: "Blogs post 1",
-        body: "Test blog 2",
-        category: categories[1].category,
-        date: "15 June 2023",
-        rating: 0
-    },
-    {
-        id: "2",
-        img: "https://emgotas.files.wordpress.com/2016/11/what-is-a-team.jpg",
-        title: "Blogs post 2",
-        body: "Test blog 2",
-        category: categories[1].category,
-        date: "15 July 2023",
-        rating: 0
-    },
-    {
-        id: "3",
-        img: "https://emgotas.files.wordpress.com/2016/11/what-is-a-team.jpg",
-        title: "Blogs post 3",
-        body: "Test blog 3",
-        category: categories[2].category,
-        date: "15 January 2023",
-        rating: 0
-    },
-    {
-        id: "4",
-        img: "https://emgotas.files.wordpress.com/2016/11/what-is-a-team.jpg",
-        title: "ASD post 4",
-        body: "Test blog 4",
-        category: categories[2].category,
-        date: "15 September 2023",
-        rating: 3
-    },
-    {
-        id: "5",
-        img: "https://emgotas.files.wordpress.com/2016/11/what-is-a-team.jpg",
-        title: "Blogs post 5",
-        body: "Test blog 5",
-        category: categories[1].category,
-        date: "15 August 2023",
-        rating: 2
-    },
-    {
-        id: "6",
-        img: "https://emgotas.files.wordpress.com/2016/11/what-is-a-team.jpg",
-        title: "Blogs post 6",
-        body: "Test blog 6",
-        category: categories[2].category,
-        date: "15 December 2023",
-        rating: 0
-    },
-    {
-        id: "7",
-        img: "https://emgotas.files.wordpress.com/2016/11/what-is-a-team.jpg",
-        title: "Blogs post 7",
-        body: "Test blog 7",
-        category: categories[1].category,
-        date: "15 November 2023",
-        rating: 0
-    },
-    {
-        id: "8",
-        img: "https://emgotas.files.wordpress.com/2016/11/what-is-a-team.jpg",
-        title: "Blogs post 8",
-        body: "Test blog 8",
-        category: categories[1].category,
-        date: "15 May 2023",
-        rating: 0
-    },
-    {
-        id: "9",
-        img: "https://emgotas.files.wordpress.com/2016/11/what-is-a-team.jpg",
-        title: "Blogs post 9",
-        body: "Test blog 9",
-        category: categories[2].category,
-        date: "15 March 2023",
-        rating: 0
-    },
-    {
-        id: "10",
-        img: "https://emgotas.files.wordpress.com/2016/11/what-is-a-team.jpg",
-        title: "Blogs post 10",
-        body: "Test blog 10",
-        category: categories[2].category,
-        date: "15 February 2023",
-        rating: 0
-    },
-    {
-        id: "11",
-        img: "https://emgotas.files.wordpress.com/2016/11/what-is-a-team.jpg",
-        title: "Blogs post 11",
-        body: "Test blog 11",
-        category: categories[1].category,
-        date: "15 April 2023",
-        rating: 0
-    },
-    {
-        id: "12",
-        img: "https://emgotas.files.wordpress.com/2016/11/what-is-a-team.jpg",
-        title: "Blogs post 12",
-        body: "Test blog 12",
-        category: categories[2].category,
-        date: "15 October 2023",
-        rating: 0
-    },
-];
 
 function Blogs() {
+    const {language} = useContext(LanguageContext);
+
     const slicePage = 5; // количество блогов на странице
     const [page, setPage] = useState(1);
 
-    const [blogs, setBlogs] = useState(blogList);
+    const [blogs, setBlogs] = useState([]);
+    const [categories, setCategories] = useState(category);
 
     /* выбраная сортировка пользователём */
     const [userSortSelected, setUserSortSelected] = useState(options[0].value);
@@ -141,7 +35,7 @@ function Blogs() {
     /* на будущее если захотим создавать поиск по заголовкам этот стейт пригодится */
     const [countPage, setCountPage] = useState(Math.ceil(Object.keys(blogs).length / slicePage));
 
-    const [activeBtn, setActiveBtn] = useState(categories[0].category); // активная категория
+    const [activeBtn, setActiveBtn] = useState(category[0].category); // активная категория
 
     useEffect(() => {
         /* Фильтруем блоги */
@@ -149,6 +43,35 @@ function Blogs() {
             activeBtn === categories[0].category ? true : blog.category === activeBtn
         );
         setCountPage(Math.ceil(Object.keys(filteredBlogs).length / slicePage));
+
+        if(blogs.length === 0) { // инициализация первый раз
+            // вытягиваем json блогов с firebase
+            const todoRef1 = ref(db, `blogs`);
+            onValue(todoRef1, (snapshot) => {
+                setBlogs([]);
+                const data = snapshot.val();
+                if (data !== null) {
+                    Object.values(data).map((todo) => {
+                        setBlogs((oldArray) => [...oldArray, todo]);
+                    });
+                }
+            });
+        }
+
+        if(categories.length === 1) { // по умолчанию мы выше инициализировалии только 1 категорию (показать все)
+            // вытягиваем json категорий с firebase
+            const todoRef2 = ref(db, `categories`);
+            onValue(todoRef2, (snapshot) => {
+                    setCategories([]);
+                    const data = snapshot.val();
+                    if (data !== null) {
+                        Object.values(data).map((category) => {
+                            setCategories((oldArray) => [...oldArray, category]);
+                        });
+                    }
+                }
+            );
+        }
 
     }, [blogs, activeBtn, slicePage]);
 
@@ -178,13 +101,16 @@ function Blogs() {
     /* Обновление рейтинга с изменение в нашем листе блогов */
     function handleRatingChange(id, newRating) {
         const updateBlogs = blogs;
-        updateBlogs.find((item, index) => {
+        updateBlogs.find(item => {
             if (item.id === id) {
                 item.rating = newRating;
             }
         });
         setBlogs(updateBlogs);
-        // console.log("New rating:", newRating, " id", id);
+
+        update(ref(db, `blogs/${id-1}`), {
+            rating: newRating
+        })
     }
 
     return (
@@ -195,7 +121,11 @@ function Blogs() {
                 <select onChange={handleChange}>
                     {
                         options.map((item, index) => {
-                            return <option key={index} value={item.value}> {item.label} </option>
+                            return <option key={index} value={item.value}>
+                                {
+                                    language === "uk" ? item.labelUA : item.labelEN
+                                }
+                            </option>
                         })
                     }
                 </select>
@@ -241,7 +171,7 @@ function Blogs() {
                                     setPage((prevState) => prevState - 1);
                                 }}
                             >
-                                {'<'} Previous
+                                {'<'} { language === "uk" ? "Назад" : "Previous"}
                             </button>
                         </div>
                         <div className="pagination_number">
@@ -275,7 +205,7 @@ function Blogs() {
                                     setPage((prevState) => prevState + 1);
                                 }}
                             >
-                                Next >
+                                { language === "uk" ? "Вперед" : "Next"} >
                             </button>
                         </div>
                     </div>
@@ -283,7 +213,11 @@ function Blogs() {
 
                 {/* Боковая панелька */}
                 <Col md="3">
-                    <h5 className="text-center mt-5">Категорії</h5>
+                    <h5 className="text-center mt-5">
+                        {
+                            language === "uk" ? "Категорії" : "Categories"
+                        }
+                    </h5>
 
                     <Card>
                         <ListGroup variant="flush">
@@ -317,14 +251,14 @@ function Blogs() {
                         </ListGroup>
                     </Card>
 
-                    <Card className="mt-3 bg-light">
-                        <Card.Body>
-                            <Card.Title>Slide widget</Card.Title>
-                            <Card.Text>
-                                Lorem
-                            </Card.Text>
-                        </Card.Body>
-                    </Card>
+                    {/*<Card className="mt-3 bg-light">*/}
+                    {/*    <Card.Body>*/}
+                    {/*        <Card.Title>Slide widget</Card.Title>*/}
+                    {/*        <Card.Text>*/}
+                    {/*            Lorem*/}
+                    {/*        </Card.Text>*/}
+                    {/*    </Card.Body>*/}
+                    {/*</Card>*/}
                 </Col>
             </Row>
         </Container>

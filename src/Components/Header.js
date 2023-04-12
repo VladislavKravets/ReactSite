@@ -1,4 +1,4 @@
-import React, {Component, useState} from "react";
+import React, {Component, useContext, useState} from "react";
 import {
     Navbar,
     Nav,
@@ -11,11 +11,15 @@ import {
 
 import logo from "../assets/logo.png";
 import ModalBox from "./Header/ModalBox";
+import LanguageSelector from "./LanguageSelector";
+import LanguageContext from "./LanguageContext";
 
 
 function Header() {
     const logoText = 'Tourism'
     const [show, setShow] = useState(false);
+    const {language} = useContext(LanguageContext);
+
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -47,15 +51,28 @@ function Header() {
                             <Nav.Link href="/"> Home </Nav.Link>
                             <Nav.Link href="/about"> About us </Nav.Link>
                             <Nav.Link href="/contacts"> Contacts </Nav.Link>
-                            <Nav.Link href="/blog"> Blog </Nav.Link>
+                            <Nav.Link href="/blogs"> Blogs </Nav.Link>
                         </Nav>
                         <Form className="d-flex ms-auto">
+                            <LanguageSelector/>
                             <FormControl
                                 type="text"
-                                placeholder="Search"
+                                placeholder={
+                                    language === "uk" ?
+                                        "Пошук"
+                                        :
+                                        "Search"
+                                }
                                 className="me-sm-3"
                             />
-                            <Button variant="outline-info">Search</Button>
+                            <Button variant="outline-info">
+                                {
+                                    language === "uk" ?
+                                        "Пошук"
+                                        :
+                                        "Search"
+                                }
+                            </Button>
                             <Button className="ms-2" onClick={handleShow}>Login</Button>
                         </Form>
                     </Navbar.Collapse>
@@ -63,8 +80,7 @@ function Header() {
             </Navbar>
             <div style={{height: "60px"}}></div>
             {/* <!-- здесь 60px - это высота хедера. Костыль? - правда ) -->*/}
-
-            <ModalBox show = {show} handleShow = {handleShow} handleClose = {handleClose}/>
+            <ModalBox show={show} handleShow={handleShow} handleClose={handleClose}/>
 
         </>
     );

@@ -8,7 +8,7 @@ function Contacts() {
     const [check, setCheck] = useState(false);
     const [validated, setValidated] = useState(false);
 
-    const {language} = useContext(LanguageContext);
+    const {language} = useContext(LanguageContext) || {};
 
     const handleSubmit = (event) => {
         const form = event.currentTarget;

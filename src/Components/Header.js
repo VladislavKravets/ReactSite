@@ -14,12 +14,10 @@ import ModalBox from "./Header/ModalBox";
 import LanguageSelector from "./LanguageSelector";
 import LanguageContext from "./LanguageContext";
 
-
 function Header() {
     const logoText = 'Tourism'
     const [show, setShow] = useState(false);
-    const {language} = useContext(LanguageContext);
-
+    const {language} = useContext(LanguageContext) || {};
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -42,7 +40,7 @@ function Header() {
                             className="d-inline-block align-top"
 
                             alt="Logo"
-                        />{" "}
+                        />
                         {logoText}
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
@@ -80,7 +78,7 @@ function Header() {
             </Navbar>
             <div style={{height: "60px"}}></div>
             {/* <!-- здесь 60px - это высота хедера. Костыль? - правда ) -->*/}
-            <ModalBox show={show} handleShow={handleShow} handleClose={handleClose}/>
+            <ModalBox show={show} handleShow={ () => setShow(false) } handleClose={ () => setShow(true)}/>
 
         </>
     );

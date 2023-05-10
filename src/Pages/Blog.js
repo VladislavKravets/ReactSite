@@ -19,17 +19,19 @@ function Blog() {
     // ссылка блога
     const {link} = useParams();
 
+    // коментарии обработка в бд
+    // удаление
     const handleDelete = (comment) => {
         remove(ref(db, `comments/${link}/${comment.uuid}`)).then(r => console.log(r));
     }
-
+    // обновления
     const handleUpdate = (comment) => {
         setIsEdit(true);
         setTempUuid(comment.uuid);
         setComment(comment.comment);
         setAuthor(comment.author);
     }
-
+    // обновление после нажатия
     const handleSubmitChange = () => {
         update(ref(db, `comments/${link}/${tempUuid}`), {
             comment: comment,
@@ -40,30 +42,7 @@ function Blog() {
         setAuthor("");
         setIsEdit(false);
     }
-
-    useEffect(() => {
-        const commentsRef = ref(db, `comments/${link}`);
-        onValue(commentsRef, (snapshot) => {
-            setComments([]);
-            const data = snapshot.val();
-            if (data !== null) {
-                Object.values(data).map((todo) => {
-                    setComments((oldArray) => [...oldArray, todo]);
-                });
-            }
-        });
-        const blogsRef = ref(db, `blogs`);
-        onValue(blogsRef, (snapshot) => {
-            setBlogs([]);
-            const data = snapshot.val();
-            if (data !== null) {
-                Object.values(data).map((todo) => {
-                    setBlogs((oldArray) => [...oldArray, todo]);
-                });
-            }
-        });
-    }, []);
-
+    // запись в бд
     const writeToDatabase = () => {
         const uuid = uid();
         set(ref(db, `comments/${link}/${uuid}`), {
@@ -74,6 +53,29 @@ function Blog() {
         setComment("");
         setAuthor(""); // clear author field after submitting
     }
+
+    useEffect(() => {
+        const commentsRef = ref(db, `comments/${link}`);
+        onValue(commentsRef, (snapshot) => {
+            setComments([]);
+            const data = snapshot.val();
+            if (data !== null) {
+                Object.values(data).map((comment) => {
+                    setComments((oldArray) => [...oldArray, comment]);
+                });
+            }
+        });
+        const blogsRef = ref(db, `blogs`);
+        onValue(blogsRef, (snapshot) => {
+            setBlogs([]);
+            const data = snapshot.val();
+            if (data !== null) {
+                Object.values(data).map((blog) => {
+                    setBlogs((oldArray) => [...oldArray, blog]);
+                });
+            }
+        });
+    }, []);
 
     return (
         <>
